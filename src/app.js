@@ -9,6 +9,18 @@ app.use(cors());
 
 const repositories = [];
 
+function logRequests(request, response, next) {
+  const { method, url } = request;
+
+  const logLabel = `[${method.toUpperCase()}] ${url}`;
+
+  console.time(logLabel);
+
+  next();
+
+  console.timeEnd(logLabel);
+};
+
 function validateProjectId(request, response, next) {
   const { id } = request.params;
 
@@ -19,6 +31,7 @@ function validateProjectId(request, response, next) {
   return next();
 }
 
+app.use(logRequests);
 app.use("/repositories/:id", validateProjectId);
 
 app.get("/repositories", (request, response) => {
